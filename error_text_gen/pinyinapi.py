@@ -12,6 +12,7 @@ class PinyinInputApi:
     def __init__(self) -> None:
         self.base_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),"data")
         self.confusion = self.read_confusion(os.path.join(self.base_path, "confusion_letters.txt"))
+        self.baiduapi = "http://olime.baidu.com/py?input={}&inputtype=py&bg=0&ed=20&result=hanzi&resultcoding=unicode&ch_en=0&clientinfo=web&version=1"
         self.googleapi = "https://inputtools.google.com/request?text={}&itc=zh-t-i0-pinyin&num=6&cp=0&cs=1&ie=utf-8&oe=utf-8&app=demopage"
     def read_confusion(self, file_path):
         """ Read Pinyin confusion set
@@ -201,13 +202,12 @@ class PinyinInputApi:
         
         if strategy == 'mix':
             switcher = {
-                0: self.orig_pinyin,
                 1: self.abbrv_pinyin,
                 2: self.cut_pinyin,
                 3: self.add_pinyin,
                 4: self.change_pinyin
             }
-            fun = random.randint(0, 4)
+            fun = random.randint(1, 4)
             # print("function:", fun)
             function = switcher.get(fun)
             _pinyin = function(word)
