@@ -18,7 +18,7 @@ class GenErrorText:
         self.pinyinapi = PinyinInputApi()
         self.charadddelete = CharAddDelete()
         self.hmm = HMM()
-        self.lac = LAC()
+        self.lac = LAC(use_cuda=True)
         self.choices = [ 
             self.pinyinchar_confusion, 
             self.pinyinchar_confusion,
@@ -114,6 +114,7 @@ if __name__ == "__main__":
             2018年9月,刘卫东受到开除党籍、开除公职处分'''
     generator = GenErrorText()
     sents = [t.strip() for t in tests.split("\n")]
+    sents = ['奥得河畔科斯琴18世纪以后由法国在1806年拍摄的，Küstrin占领了法国军事驻军的的剩余拿破仑战争。']
     for sent in sents:
         err = generator.generate(sent)  
         print(sent)

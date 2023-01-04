@@ -83,7 +83,7 @@ class PinyinWordConfusion:
     def __init__(self) -> None:
         self.base_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),"data")
         self.same_pinyin_word = self.load_word_confusion()
-        self.lac = LAC()
+        self.lac = LAC(use_cuda=True)
         print("inited PinyinWordConfusion")
     
     def load_word_confusion(self):
@@ -110,9 +110,9 @@ class PinyinWordConfusion:
         word = words[pos_word]
         py = "_".join(pypinyin.lazy_pinyin(word))
         while py not in self.same_pinyin_word and pos_word < len(words):
-            pos_word += 1
             word = words[pos_word]
             py = "_".join(pypinyin.lazy_pinyin(word))
+            pos_word += 1
 
         if py in self.same_pinyin_word:
             rewords = [ w for w in self.same_pinyin_word[py] if w != word]

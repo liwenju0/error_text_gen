@@ -1,5 +1,4 @@
 import random
-random.seed(33)
 
 class CharAddDelete:
     def __init__(self) -> None:
