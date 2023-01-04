@@ -9,4 +9,4 @@
 
 项目非常简单，就看几个文件的if __name == "__main__" 即可。
 
-数据和模型文件在百度云：链接: https://pan.baidu.com/s/1p-wZJQ3Txrfdjf3OYNb-GQ?pwd=89qc 提取码: 89qc
+数据和模型文件在百度云：链接: https://pan.baidu.com/s/167bWhoOxw-V5MPa9feRelA?pwd=15uh 提取码: 15uh

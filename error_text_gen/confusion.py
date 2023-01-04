@@ -93,7 +93,7 @@ class PinyinWordConfusion:
             items = line.split(" ")
             res[items[0]] = items[1:]
         return res 
-        
+
     def error_text(self, text, pos=0, cand_num=5):
         res = []
         words = self.lac.run(text)[0]
@@ -139,10 +139,6 @@ class PinyinWordConfusion:
 
 if __name__ == "__main__":
     wordconfusion = PinyinWordConfusion()
-    # with open("data/same_pinyin_word.txt", "w") as f:
-    #     for k, v in wordconfusion.same_pinyin_word.items():
-    #         f.write(" ".join([k]+v) + "\n")
-    
     # pyconfusion = PinyinCharConfusion()
     # strokeconfusion = StrokeCharConfusion()
     # print(pyconfusion.error_text("我们一起来到这个地方",5, 5))
