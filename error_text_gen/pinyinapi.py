@@ -43,7 +43,7 @@ class PinyinInputApi:
         used = []
         while cnt < 2*len(self.orig_pinyin(word)) and len(res) != cand_num:
             cnt += 1
-            cand_word = self.do_replace(word, "mix")
+            cand_word = self.do_replace(word)
             
             if cand_word != word and cand_word not in used:
                 used.append(cand_word)
@@ -186,7 +186,7 @@ class PinyinInputApi:
         return candidate
 
 
-    def do_replace(self, word, strategy=''):
+    def do_replace(self, word):
         """ Replace the original word
         """
         #必须是中文词语
@@ -195,12 +195,6 @@ class PinyinInputApi:
             if not '\u4e00' <= ch <= '\u9fa5' and not 'A' <= ch <= 'Z' and not 'a' <= ch <= 'z':
                 return word
 
-        if strategy == '':
-            _pinyin = self.orig_pinyin(word)
-            candidates = api(_pinyin)
-            reword = self.strict_select(word, candidates)
-        
-        if strategy == 'mix':
             switcher = {
                 1: self.abbrv_pinyin,
                 2: self.cut_pinyin,
