@@ -87,7 +87,7 @@ class GenErrorText:
             return []
         noiser = self.select_noiser()
         res = noiser.error_text(block, pos=pos)
-        return res 
+        return res
 
     def generate(self, text):
         blocks = self.seg_text(text)
