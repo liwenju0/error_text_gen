@@ -5,7 +5,7 @@ import os
 import json
 import pypinyin
 import random 
-import jieba 
+from LAC import LAC
 class PinyinCharConfusion:
     def __init__(self) -> None:
         self.base_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),"data")
@@ -83,11 +83,12 @@ class PinyinWordConfusion:
     def __init__(self) -> None:
         self.base_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),"data")
         self.same_pinyin_word = json.load(open(os.path.join(self.base_path, "same_pinyin_word.json")))
+        self.lac = LAC()
         print("inited PinyinWordConfusion")
     
     def error_text(self, text, pos=0, cand_num=5):
         res = []
-        words = jieba.lcut(text)
+        words = self.lac.run(text)[0]
         cur_index = 0
         pos_word=-1
         for i, w in enumerate(words):
