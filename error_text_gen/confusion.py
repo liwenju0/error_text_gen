@@ -82,10 +82,18 @@ class StrokeCharConfusion:
 class PinyinWordConfusion:
     def __init__(self) -> None:
         self.base_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),"data")
-        self.same_pinyin_word = json.load(open(os.path.join(self.base_path, "same_pinyin_word.json")))
+        self.same_pinyin_word = self.load_word_confusion()
         self.lac = LAC()
         print("inited PinyinWordConfusion")
     
+    def load_word_confusion(self):
+        res = {}
+        for line in  open(os.path.join(self.base_path, "same_pinyin_word.txt")):
+            line = line.strip()
+            items = line.split(" ")
+            res[items[0]] = items[1:]
+        return res 
+        
     def error_text(self, text, pos=0, cand_num=5):
         res = []
         words = self.lac.run(text)[0]
@@ -101,6 +109,11 @@ class PinyinWordConfusion:
 
         word = words[pos_word]
         py = "_".join(pypinyin.lazy_pinyin(word))
+        while py not in self.same_pinyin_word and pos_word < len(words):
+            pos_word += 1
+            word = words[pos_word]
+            py = "_".join(pypinyin.lazy_pinyin(word))
+
         if py in self.same_pinyin_word:
             rewords = [ w for w in self.same_pinyin_word[py] if w != word]
             if not rewords:
@@ -123,10 +136,15 @@ class PinyinWordConfusion:
 
 
 
+
 if __name__ == "__main__":
-    pyconfusion = PinyinCharConfusion()
     wordconfusion = PinyinWordConfusion()
-    strokeconfusion = StrokeCharConfusion()
-    print(pyconfusion.error_text("我们一起来到这个地方",5, 5))
-    print(wordconfusion.error_text("我们一起来到这个地方",5, 5))
-    print(strokeconfusion.error_text("我们一起来到这个地方",5, 5))
+    # with open("data/same_pinyin_word.txt", "w") as f:
+    #     for k, v in wordconfusion.same_pinyin_word.items():
+    #         f.write(" ".join([k]+v) + "\n")
+    
+    # pyconfusion = PinyinCharConfusion()
+    # strokeconfusion = StrokeCharConfusion()
+    # print(pyconfusion.error_text("我们一起来到这个地方",5, 5))
+    # print(wordconfusion.error_text("我们一起来到这个地方",5, 5))
+    # print(strokeconfusion.error_text("我们一起来到这个地方",5, 5))
