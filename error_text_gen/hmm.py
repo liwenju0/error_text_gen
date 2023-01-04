@@ -58,7 +58,7 @@ class HMM:
         matrix.close()
         return wordmatrix
 
-    def error_text(self, text:str, pos=0, cand_num=5):
+    def error_text(self, text:str, pos=0, cand_num=1):
         '''
         返回text pos 位置的字符的易错字符集，默认返回5个。
         '''

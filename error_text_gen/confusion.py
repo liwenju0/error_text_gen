@@ -17,7 +17,7 @@ class PinyinCharConfusion:
         print("inited PinyinCharConfusion")
 
     
-    def error_text(self, text, pos=0, cand_num=5):
+    def error_text(self, text, pos=0, cand_num=1):
         if pos >= len(text):
             return []
         char = pypinyin.lazy_pinyin(text[pos])[0]

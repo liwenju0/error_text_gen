@@ -1,12 +1,13 @@
 import random
 random.seed(33)
 
-class AddDelete:
+class CharAddDelete:
     def __init__(self) -> None:
         pass
 
-    def error_text(self, text, pos=0, cand_num=1):
-        poses = [i for i in range(len(text))]
+    def error_text(self, text, pos=0, cand_num=1, poses=None):
+        if not poses:
+            poses = [i for i in range(len(text))]
         cho = random.random()
         # 随机选择删除、添加和交换操作
         if cho < 1/3: #删除pos上的字符

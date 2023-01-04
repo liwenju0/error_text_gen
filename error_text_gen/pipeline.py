@@ -16,10 +16,22 @@ class GenErrorText:
         self.pinyinword_confusion = PinyinWordConfusion()
         self.strokechar_confusion = StrokeCharConfusion()
         self.pinyinapi = PinyinInputApi()
+        self.hmm = HMM()
         self.lac = LAC()
-        
+        self.choices = [ 
+            self.pinyinchar_confusion, 
+            self.pinyinchar_confusion,
+            self.pinyinchar_confusion,  #拼音替换占30%
+            self.hmm,                   #隐马全拼替换占20%
+            self.strokechar_confusion,  #字形替换占10%
+            self.pinyinword_confusion,  #同音词替换占10%
+            self.pinyinapi,             #拼音api替换占30%
+            self.pinyinapi,
+            self.pinyinapi
 
-    @LruCache(maxsize=200, timeout=1000)
+        ]
+
+    @LruCache(maxsize=200, timeout=100)
     def forbidden_pos(self, text):
         '''
         找出不能造错的位置。目前确定的是非中文字符、人名PER、地名LOC、组织名ORG、时间TIME、作品名nw
@@ -59,10 +71,13 @@ class GenErrorText:
             if select not in res:
                 res.append(select)
 
-        return res 
-        
+        return res  
 
     def generate(self, text):
+        
+
+
+
 
 
 

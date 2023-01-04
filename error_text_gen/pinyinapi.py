@@ -12,7 +12,9 @@ class PinyinInputApi:
     def __init__(self) -> None:
         self.base_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),"data")
         self.confusion = self.read_confusion(os.path.join(self.base_path, "confusion_letters.txt"))
+        self.baiduapi = "http://olime.baidu.com/py?input={}&inputtype=py&bg=0&ed=20&result=hanzi&resultcoding=unicode&ch_en=0&clientinfo=web&version=1"
         self.googleapi = "https://inputtools.google.com/request?text={}&itc=zh-t-i0-pinyin&num=6&cp=0&cs=1&ie=utf-8&oe=utf-8&app=demopage"
+    
     def read_confusion(self, file_path):
         """ Read Pinyin confusion set
         """
@@ -23,7 +25,7 @@ class PinyinInputApi:
                 confusion[letter] = confs
         return confusion
 
-    def error_text(self, text, pos=0, cand_num=5):
+    def error_text(self, text, pos=0, cand_num=1):
         res = []
         words = jieba.lcut(text)
         cur_index = 0
