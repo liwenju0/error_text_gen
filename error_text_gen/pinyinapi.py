@@ -6,8 +6,6 @@ import time
 import json
 import os 
 
-random.seed(1000)
-
 class PinyinInputApi:
     def __init__(self) -> None:
         self.base_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),"data")
@@ -207,6 +205,7 @@ class PinyinInputApi:
             function = switcher.get(fun)
             _pinyin = function(word)
             candidates = api(_pinyin)
+            # print(candidates)
             reword = self.loose_select(word, candidates)
 
         # print("Pinyin:", _pinyin)

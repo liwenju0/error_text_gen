@@ -5,8 +5,10 @@ from confusion import PinyinCharConfusion, PinyinWordConfusion, StrokeCharConfus
 from hmm import HMM
 from pinyinapi import PinyinInputApi
 from add_delete_char import CharAddDelete
-from  LAC import LAC
-import pycorrector as pc 
+import pycorrector as pc
+import jieba  
+import time 
+from LAC import LAC 
 import random 
 random.seed(33)
 
@@ -18,17 +20,19 @@ class GenErrorText:
         self.pinyinapi = PinyinInputApi()
         self.charadddelete = CharAddDelete()
         self.hmm = HMM()
-        self.lac = LAC(use_cuda=True)
+        self.lac = LAC()
         self.choices = [ 
             self.pinyinchar_confusion, 
             self.pinyinchar_confusion,
             self.pinyinchar_confusion,  #拼音替换占30%
-            self.hmm,                   #隐马全拼替换占20%
-            self.strokechar_confusion,  #字形替换占10%
+            self.hmm,                   #隐马全拼替换占30%
+            self.hmm, 
+            self.hmm, 
+            self.strokechar_confusion,  #字形替换占20%
+            self.strokechar_confusion,
             self.pinyinword_confusion,  #同音词替换占10%
             self.charadddelete,         #添加删除交换占10%
-            self.pinyinapi,             #拼音api替换占20%
-            self.pinyinapi
+            # self.pinyinapi,             #拼音api替换占10%
 
         ]
 
@@ -71,7 +75,7 @@ class GenErrorText:
 
 
     def seg_text(self, text, stride=15):
-        words, _ = self.lac.run(text)
+        words = jieba.lcut(text, HMM=False)
         res = []
         cur_index = 0
         while cur_index < len(words):
@@ -101,8 +105,7 @@ class GenErrorText:
         
         return "".join(res)
 
-        
-if __name__ == "__main__":
+def stat_time():
     tests = '''央广网重庆1月31日消息(记者吴新伟)重庆市纪委监察委官微"风正巴渝"今披露,该市近日通报3起违反中央八项规定精神问题。
             据通报,重庆长寿化工有限责任公司党委委员、董事、副总经理李文成违规发放津补贴。
             2013年4月至2017年11月,李文成违规以节日津补贴等名义向公司办公室职工发放11万余元,其中本人违规领取3.2万余元。
@@ -112,13 +115,42 @@ if __name__ == "__main__":
             2013年1月至2017年1月,刘卫东在任垫江县原卫生局党委书记、局长,以及垫江县原卫生和计划生育委员会党委书记、主任期间,先后收受管理服务对象礼金共计4万元；
             同时,刘卫东还存在其他严重违纪违法问题。
             2018年9月,刘卫东受到开除党籍、开除公职处分'''
+    tests = tests.replace("\n", "")
     generator = GenErrorText()
-    sents = [t.strip() for t in tests.split("\n")]
-    sents = ['奥得河畔科斯琴18世纪以后由法国在1806年拍摄的，Küstrin占领了法国军事驻军的的剩余拿破仑战争。']
-    for sent in sents:
-        err = generator.generate(sent)  
-        print(sent)
-        print(err)
+    def stat(noiser):
+        now = time.time()
+        for _ in range(10):
+            noiser.error_text(tests)
+        print(noiser.__class__.__name__, time.time()-now)
+
+    stat(generator.pinyinchar_confusion)
+    stat(generator.pinyinapi)
+    stat(generator.pinyinword_confusion)
+    stat(generator.hmm)
+    stat(generator.strokechar_confusion)
+    stat(generator.charadddelete)
+
+
+        
+if __name__ == "__main__":
+    stat_time()
+    # tests = '''央广网重庆1月31日消息(记者吴新伟)重庆市纪委监察委官微"风正巴渝"今披露,该市近日通报3起违反中央八项规定精神问题。
+    #         据通报,重庆长寿化工有限责任公司党委委员、董事、副总经理李文成违规发放津补贴。
+    #         2013年4月至2017年11月,李文成违规以节日津补贴等名义向公司办公室职工发放11万余元,其中本人违规领取3.2万余元。
+    #         2018年7月,李文成受到党内严重警告处分、扣减2017年全部绩效年薪处理；
+    #         违纪款项已清退。
+    #         垫江县原卫生和计划生育委员会党委书记、主任刘卫东违规收受礼金问题。
+    #         2013年1月至2017年1月,刘卫东在任垫江县原卫生局党委书记、局长,以及垫江县原卫生和计划生育委员会党委书记、主任期间,先后收受管理服务对象礼金共计4万元；
+    #         同时,刘卫东还存在其他严重违纪违法问题。
+    #         2018年9月,刘卫东受到开除党籍、开除公职处分'''
+    
+    # generator = GenErrorText()
+    # sents = [t.strip() for t in tests.split("\n")]
+    # sents = ['奥得河畔科斯琴18世纪以后由法国在1806年拍摄的，Küstrin占领了法国军事驻军的的剩余拿破仑战争。']
+    # for sent in sents:
+    #     err = generator.generate(sent)  
+    #     print(sent)
+    #     print(err)
 
 
 
